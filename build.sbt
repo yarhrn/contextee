@@ -11,6 +11,5 @@ lazy val root = (project in file(".")).
     name := "Hello",
     resolvers += Resolver.sonatypeRepo("releases"),
     addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4"),
-    libraryDependencies += "org.typelevel" %% "cats-core" % "1.0.1",
-    libraryDependencies += scalaTest % Test
+    libraryDependencies ++= Seq(catsCore, scalaTest % Test)
   )
