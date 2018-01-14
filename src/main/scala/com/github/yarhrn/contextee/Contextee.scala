@@ -11,7 +11,7 @@ trait Contextee[F[_], C] {
 
 object Contextee {
 
-  implicit def readerCatsContextee[F[_] : Applicative, C] = new Contextee[Lambda[A => ReaderT[F, C, A]], C] {
+  implicit def contexteeForCatsReaderT[F[_] : Applicative, C] = new Contextee[Lambda[A => ReaderT[F, C, A]], C] {
     override def context: ReaderT[F, C, C] = ReaderT {
       ctx => Applicative[F].pure(ctx)
     }
