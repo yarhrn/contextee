@@ -1,8 +1,8 @@
 package com.github.yarhrn.contextee
 
-import cats.{Id, Monad}
-import cats.data.{Reader, State, StateT}
+import cats.data.{Reader, State}
 import cats.free.Free
+import cats.{Id, Monad}
 import org.scalatest._
 
 import scala.language.higherKinds
