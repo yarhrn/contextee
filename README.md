@@ -1,6 +1,6 @@
 ## Contextee 
 
-Every time when some operations is executed there is a context of that operation.
+Every time operation is executed there is a context of that operation.
 This context could be:
 - request id for tracing in microservice architecture
 - current user
@@ -10,8 +10,8 @@ A big part of the code doesn't care about context, and there is no reason to pol
 There is the technique for thread per request applications in JVM to hold context in ThreadLocal.
 But ThreadLocal doesn't work(almost) in an asynchronous application. 
 
-Likely, there are several techniques to solve this using functional programming.
-We can use Reader monad in conjunction with Tagless final encoding for transparent passing context.
+Luckily, there are several techniques to solve this using functional programming.
+We can use Reader monad in conjunction with Tagless final encoding for transparent context passing.
 Or create dedicated algebra in Free monad application, that will add operation for context extraction.
 
 This repository is an attempt to create standard typeclass for handling context in the functional application.
@@ -20,6 +20,7 @@ This repository is an attempt to create standard typeclass for handling context 
 trait KStore[F[_]] {
   def get(key: String): F[String]
 }
+
 case class Ctx(key: String)
 type Context[F[_]] = Contextee[F, Ctx]
 

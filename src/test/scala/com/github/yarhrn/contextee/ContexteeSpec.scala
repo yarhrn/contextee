@@ -26,7 +26,7 @@ class ContexteeSpec extends FreeSpec with Matchers {
       import ContexteeFree._
 
       type Program[A] = Free[ContexteeAlgebra, A]
-      implicit val context = ContextHolder("asd")
+      implicit val context: ContextHolder = ContextHolder("asd")
       val contextee: Contextee[Program, ContextHolder] = implicitly[Contextee[Program, ContextHolder]]
 
       val program = contextee.context.map(_.key * 2)
@@ -38,21 +38,21 @@ class ContexteeSpec extends FreeSpec with Matchers {
 
   case class ContextHolder(key: String)
 
-  def program[F[_] : Monad : Lambda[F[_] => Contextee[F, ContextHolder]]]: F[String] = {
-    trait KStore[F[_]] {
-      def get(key: String): F[String]
+  def program[F[_] : Monad : Contextee[?[_], ContextHolder]]: F[String] = {
+    trait KStore[FG[_]] {
+      def get(key: String): FG[String]
     }
 
-    type Context[F[_]] = Contextee[F, ContextHolder]
+    type Context[FG[_]] = Contextee[FG, ContextHolder]
 
     import cats.implicits._
-    def program[F[_] : Monad : KStore : Context]: F[String] = for {
-      ctx <- Contextee[F, ContextHolder].context
-      value <- implicitly[KStore[F]].get(ctx.key)
+    def program[FG[_] : Monad : KStore : Context]: FG[String] = for {
+      ctx <- Contextee[FG, ContextHolder].context
+      value <- implicitly[KStore[FG]].get(ctx.key)
     } yield value
 
-    implicit def kstore[F[_] : Monad] = new KStore[F] {
-      override def get(key: String): F[String] = Monad[F].pure(key + key)
+    implicit def kstore[FG[_] : Monad] = new KStore[FG] {
+      override def get(key: String): FG[String] = Monad[FG].pure(key + key)
     }
 
     program[F]
